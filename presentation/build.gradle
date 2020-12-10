@@ -1,0 +1,46 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'de.mannodermaus.android-junit5'
+
+android {
+    compileSdkVersion androidCompileSdkVersion
+    buildToolsVersion androidBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion androidMinSdkVersion
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    def presentationDeps = rootProject.ext.presentationDependencies
+    def presentationTestDeps = rootProject.ext.presentationTestDependencies
+
+    implementation project(':domain')
+    implementation project(':base')
+
+    implementation presentationDeps.kotlin
+    implementation presentationDeps.coroutines
+    implementation presentationDeps.javaxAnnotation
+    implementation presentationDeps.javaxInject
+    implementation presentationDeps.navigationFragment
+    implementation presentationDeps.navigationUI
+
+    testImplementation presentationTestDeps.jupiterApi
+    testImplementation presentationTestDeps.jupiterParams
+    testRuntimeOnly presentationTestDeps.jupiterEngine
+    testImplementation presentationTestDeps.mockk
+    testImplementation presentationTestDeps.assertk
+    testImplementation presentationTestDeps.coroutinesTest
+    testImplementation presentationTestDeps.extJunit
+    androidTestImplementation presentationTestDeps.espresso
+}

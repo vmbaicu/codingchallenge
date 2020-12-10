@@ -1,0 +1,44 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion androidCompileSdkVersion
+    buildToolsVersion androidBuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion androidMinSdkVersion
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+dependencies {
+    def dataDeps = rootProject.ext.dataDependencies
+    def dataTestDeps = rootProject.ext.dataTestDependencies
+
+    implementation project(path: ':domain', configuration: 'default')
+    implementation project(':base')
+
+    implementation dataDeps.kotlin
+    implementation dataDeps.coroutines
+    implementation dataDeps.javaxAnnotation
+    implementation dataDeps.javaxInject
+
+    testImplementation dataTestDeps.jupiterApi
+    testImplementation dataTestDeps.jupiterParams
+    testRuntimeOnly dataTestDeps.jupiterEngine
+    testImplementation dataTestDeps.mockk
+    testImplementation dataTestDeps.assertk
+}

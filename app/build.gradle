@@ -1,0 +1,80 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: 'de.mannodermaus.android-junit5'
+
+android {
+    compileSdkVersion androidCompileSdkVersion
+    buildToolsVersion androidBuildToolsVersion
+
+    defaultConfig {
+        applicationId "com.softvision.codingchallenge"
+        minSdkVersion androidMinSdkVersion
+        targetSdkVersion 29
+        versionCode BUILD_NUMBER
+        versionName "${APPLICATION_NAME}-${APPLICATION_VERSION}"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "APP_VERSION", "\"${APPLICATION_VERSION}\"")
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+kapt {
+    generateStubs = true
+    correctErrorTypes true
+}
+
+dependencies {
+    def uiDeps = rootProject.ext.uiDependencies
+    def uiTestDeps = rootProject.ext.uiTestDependencies
+
+    // According to Clean Architecture we need to respect the onion layering, however we need to
+    // have visibility in the other modules for DI.
+    // This module should only implement presentation but have visibility in the others as well.
+    implementation project(':presentation')
+    api project(':domain')
+    api project(':data')
+    api project(':base')
+
+    implementation uiDeps.kotlin
+    implementation uiDeps.appcompat
+    implementation uiDeps.coreKtx
+    implementation uiDeps.javaxAnnotation
+
+    implementation uiDeps.constraintLayout
+    implementation uiDeps.material
+
+    implementation uiDeps.navigationFragment
+    implementation uiDeps.navigationUI
+
+    kapt uiDeps.daggerCompiler
+    kapt uiDeps.daggerAndroidProcessor
+    implementation uiDeps.dagger
+    implementation uiDeps.daggerAndroid
+    implementation uiDeps.daggerAndroidSupport
+
+
+    testImplementation uiTestDeps.jupiterApi
+    testImplementation uiTestDeps.jupiterParams
+    testRuntimeOnly uiTestDeps.jupiterEngine
+    testImplementation uiTestDeps.extJunit
+    androidTestImplementation uiTestDeps.espresso
+}

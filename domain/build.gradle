@@ -1,0 +1,20 @@
+apply plugin: 'kotlin'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    def domainDeps = rootProject.ext.domainDependencies
+    def domainTestDeps = rootProject.ext.domainTestDependencies
+
+    implementation domainDeps.kotlin
+    implementation domainDeps.coroutines
+    implementation domainDeps.javaxAnnotation
+    implementation domainDeps.javaxInject
+
+    testImplementation domainTestDeps.jupiterApi
+    testImplementation domainTestDeps.jupiterParams
+    testRuntimeOnly domainTestDeps.jupiterEngine
+    testImplementation domainTestDeps.mockk
+    testImplementation domainTestDeps.assertk
+}
